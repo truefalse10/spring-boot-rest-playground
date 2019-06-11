@@ -1,6 +1,18 @@
 package hello;
 
 public class Customer {
+    public long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
     private long id;
     private String firstName, lastName;
 

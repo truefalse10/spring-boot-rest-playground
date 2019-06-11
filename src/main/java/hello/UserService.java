@@ -3,8 +3,10 @@ package hello;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,12 +40,15 @@ public class UserService {
 
 
     }
-    public void getCustomer(String firstName) {
+    public Customer getCustomer(String firstName) {
         log.info(String.format("Querying for customer records where first_name = '%s':", firstName));
-        jdbcTemplate.query(
+        List<Customer> customers = jdbcTemplate.query(
                 "SELECT id, first_name, last_name FROM customers WHERE first_name = ?", new Object[] { firstName },
                 (rs, rowNum) -> new Customer(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"))
-        ).forEach(customer -> log.info(customer.toString()));
-
+        );
+        if (customers.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
+        }
+        return customers.get(0);
     }
 }
