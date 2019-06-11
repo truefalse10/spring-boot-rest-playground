@@ -51,4 +51,12 @@ public class UserService {
         }
         return customers.get(0);
     }
+
+    public List<Customer> getCustomers() {
+        List<Customer> customers = jdbcTemplate.query(
+                "SELECT id, first_name, last_name FROM customers",
+                (rs, rowNum) -> new Customer(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"))
+        );
+        return customers;
+    }
 }
